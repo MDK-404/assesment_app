@@ -1,13 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'auth.dart';
+import 'login.dart';
+import 'home_page.dart';
 
-class SignupPage extends StatelessWidget {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class SignupPage extends StatefulWidget {
   final AuthService authService;
 
   SignupPage({required this.authService});
+
+  @override
+  _SignupPageState createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> _signup() async {
+    String name = nameController.text;
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    // Store the email and password using SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', email);
+    await prefs.setString('password', password);
+
+    // Navigate to the login page
+    bool? loggedIn = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginPage(authService: widget.authService),
+      ),
+    );
+
+    // If login was successful, navigate to the home page
+    if (loggedIn == true) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(authService: widget.authService),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,42 +101,18 @@ class SignupPage extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () async {
-                    String name = nameController.text;
-                    String email = emailController.text;
-                    String password = passwordController.text;
-
-                    bool signedUp =
-                        await authService.signup(name, email, password);
-
-                    if (signedUp) {
-                      Navigator.pop(context);
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text('Error'),
-                            content: Text('Signup failed'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text('OK'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  },
+                  onPressed: _signup,
                   child: Text('Signup'),
                 ),
-                SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            LoginPage(authService: widget.authService),
+                      ),
+                    );
                   },
                   child: Text('Already have an account? Login'),
                 ),
