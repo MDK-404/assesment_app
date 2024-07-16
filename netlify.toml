@@ -1,0 +1,6 @@
+[build]
+  command = "flutter --version; flutter build web"
+  publish = "build/web"
+  functions = "build/functions"
+[build]
+  command = "bash ./scripts/build.sh"

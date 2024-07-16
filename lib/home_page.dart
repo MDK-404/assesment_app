@@ -1,8 +1,7 @@
-import 'package:assesment_app/assesment_page.dart';
 import 'package:flutter/material.dart';
 import 'auth.dart';
-
 import 'login_page.dart';
+import 'assesment_page.dart';
 
 class HomePage extends StatefulWidget {
   final AuthService authService;
@@ -19,6 +18,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Assessment App'),
+        backgroundColor: Colors.blue, // Setting app bar color to blue
         actions: [
           TextButton(
             onPressed: () async {
@@ -54,9 +54,21 @@ class _HomePageState extends State<HomePage> {
                       AssessmentPage(authService: widget.authService)),
             );
           },
-          child: Text('Take Assessment'),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.blue, // Setting text color to white
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Take Assessment',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
         ),
       ),
+      backgroundColor:
+          Colors.blue.shade50, // Setting background color to light blue
     );
   }
 }
