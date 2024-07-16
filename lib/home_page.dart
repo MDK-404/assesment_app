@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'auth.dart';
-import 'login_page.dart';
 import 'assesment_page.dart';
+import 'login.dart';
+import 'signup.dart'; // Import the SignupPage
 
 class HomePage extends StatefulWidget {
   final AuthService authService;
@@ -23,22 +24,20 @@ class _HomePageState extends State<HomePage> {
           TextButton(
             onPressed: () async {
               if (!widget.authService.isLoggedIn()) {
-                bool? loggedIn = await Navigator.push(
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          LoginPage(authService: widget.authService)),
+                      builder: (context) => SignupPage(
+                          authService:
+                              widget.authService)), // Navigate to SignupPage
                 );
-                if (loggedIn == true) {
-                  setState(() {}); // Refresh the state to reflect login status
-                }
               } else {
                 widget.authService.logout();
                 setState(() {}); // Refresh the state to reflect logout status
               }
             },
             child: Text(
-              widget.authService.isLoggedIn() ? 'Logout' : 'Login',
+              widget.authService.isLoggedIn() ? 'Logout' : 'Signup',
               style: TextStyle(color: Colors.black),
             ),
           ),

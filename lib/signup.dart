@@ -1,20 +1,19 @@
-import 'package:assesment_app/assesment_page.dart';
 import 'package:flutter/material.dart';
 import 'auth.dart';
 
-class LoginPage extends StatelessWidget {
-  final TextEditingController usernameController = TextEditingController();
+class SignupPage extends StatelessWidget {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final AuthService authService;
-  final bool redirectToAssessment;
 
-  LoginPage({required this.authService, this.redirectToAssessment = false});
+  SignupPage({required this.authService});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Signup'),
       ),
       body: Stack(
         children: [
@@ -36,9 +35,18 @@ class LoginPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextField(
-                  controller: usernameController,
+                  controller: nameController,
                   decoration: InputDecoration(
-                    labelText: 'Username',
+                    labelText: 'Name',
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.8),
+                  ),
+                ),
+                SizedBox(height: 12),
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.8),
                   ),
@@ -56,30 +64,22 @@ class LoginPage extends StatelessWidget {
                 SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () async {
-                    String username = usernameController.text;
+                    String name = nameController.text;
+                    String email = emailController.text;
                     String password = passwordController.text;
 
-                    bool loggedIn = await authService.login(username, password);
+                    bool signedUp =
+                        await authService.signup(name, email, password);
 
-                    if (loggedIn) {
-                      if (redirectToAssessment) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  AssessmentPage(authService: authService)),
-                        );
-                      } else {
-                        Navigator.pop(
-                            context, true); // Navigate back with success flag
-                      }
+                    if (signedUp) {
+                      Navigator.pop(context);
                     } else {
                       showDialog(
                         context: context,
                         builder: (context) {
                           return AlertDialog(
                             title: Text('Error'),
-                            content: Text('Invalid username or password'),
+                            content: Text('Signup failed'),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -93,7 +93,14 @@ class LoginPage extends StatelessWidget {
                       );
                     }
                   },
-                  child: Text('Login'),
+                  child: Text('Signup'),
+                ),
+                SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Already have an account? Login'),
                 ),
               ],
             ),
